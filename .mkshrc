@@ -1,0 +1,16 @@
+# $dotfiles: dot.mkshrc,v 1.0 12/06/2019 00:22:38
+
+# catch non-mksh, non-lksh, trying to run this file
+case ${KSH_VERSION:-} in
+*LEGACY\ KSH*|*MIRBSD\ KSH*) ;;
+*) \return 0 ;;
+esac
+
+# Load settings
+. $HOME/.sh.d/settings
+. $HOME/.sh.d/func
+. $HOME/.sh.d/alias
+. $HOME/.sh.d/style
+. $HOME/.sh.d/export
+. $HOME/.sh.d/bind
+

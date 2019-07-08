@@ -1,0 +1,206 @@
+# $dotfiles: func, v 1.0  12/06/2019 03:16
+
+bang() {
+	b=$1;
+	shift;
+	echo "\!$b $*" | xargs ddgr --noprompt
+}
+
+# ls after a cd
+function cd()
+{
+	ls='ls --almost-all --classify --color=always --group-directories-first'
+	[[ -z "$1" ]] && cd ~ && return
+	builtin cd "$*" && $ls
+}
+
+clone () {
+	REPO=$1
+	shift
+	git clone https://github.com/$REPO $@
+}
+
+##
+# Formatted pattern for stardict-wordnet dictionary.
+#
+# @param {string} $1 Word to get definition.
+##
+def() {
+sdcv $1 | awk '{
+			for (i=1; i <= NF; i++) {
+				if (match($i, /[0-9]:/)) {
+					printf ("\033[0m\n\n");
+				} else if (match($i, "^\"")) {
+					printf ("\033[33m\n");
+				} else if (match($i, /\[syn:/) || match($i, /\[also:/) || match($i, /\[ant:/)) {
+					printf ("\033[0;37m\n");
+				}
+				printf ("%s ", $i);
+			}
+		   }' |
+ fold -s -w 80 | awk '{
+				if (match($i, /[\"{\[]/)) {
+					printf ("\n\t\t%s", $0);
+				} else {
+					printf ("\n\t%s", $0);
+				}
+			}' | less -r
+}
+
+##
+# Better 'cd ../../..' with autocomplete
+#
+# @param {(string|number)} $1 Partial parent directory string or direct number.
+##
+function .. {
+	if [[ ! $# ]]; then
+		cd ..
+		return 0
+	fi
+
+	function __upnum() {
+		if [[ "$1" == '' || "$2" == '' || "$2" = !(+([0-9])) ]]; then
+			return 0
+		fi
+
+		local p="$1"
+		local i="$2"
+
+		while (( i-- )) {
+			local p="$(dirname $p)"
+		}
+
+		echo "$p"
+	}
+
+	function __updir() {
+		if [[ "$1" == '/' || "$1" == '' || "$2" == '' ]]; then
+			return 0
+		fi
+
+		local p="$(dirname $1)"
+		local a="$(basename $p)"
+		local b="$(basename $2)"
+
+		if [[ "$a" == '' || "$b" == '' ]]; then
+			return 0
+		fi
+
+		if [[ "$a" == "$b"* ]]; then
+			echo "$p"; return 0
+		fi
+
+		__updir "$p" "$2"
+	}
+
+	local d="$(__updir "$PWD" "$1")"
+	if [[ -d "$d" ]]; then
+		cd "$d"
+		return 0
+	fi
+
+	local n="$(__upnum "$PWD" "$1")"
+	if [[ -d "$n" ]]; then
+		cd "$n"
+		return 0
+	fi
+}
+
+# Select command from history into the command line.
+function reverse-history-search() {
+	if [[! hash fzf &>/dev/null ]]; then
+		return 1
+	fi
+
+	# setopt LOCAL_OPTIONS NO_GLOB_SUBST NO_POSIX_BUILTINS PIPE_FAIL 2>/dev/null
+
+	local selected=$(
+			fc -ln 1 \
+				| sort -u \
+				| fzf \
+					--tac \
+					--nth='2..,..' \
+					--tiebreak='index' \
+					--query="${LBUFFER}" \
+					--exact \
+					--prompt='$ ' \
+		)
+
+	local stat=$?
+
+	if [[ "$selected" != '' ]]; then
+			eval $(echo $selected)
+	fi
+
+	return $stat
+}
+
+
+##################
+# Useful scripts #
+##################
+
+# Always look on your most used commands and create shotcuts.
+@-most-used-commands() {
+	fc -l +1 |
+	awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' |
+	grep -v "./" |
+	column -c3 -s " " -t |
+	sort -nr |
+	nl |
+	head -n10
+}
+
+# List all installed packages, not base or base-devel groups.
+@-packages-list-user() {
+
+	all_packages=/tmp/all.list
+	base_packages=/tmp/base.list
+
+	pacman -Qeq | sort > $all_packages
+	pacman -Qgq base base-devel | sort > $base_packages
+
+	comm -23 $all_packages $base_packages
+}
+
+@-packages-list-size() {
+	pacman -Qi |
+	awk '/^Name/{name=$3} /^Installed Size/{print $4$5, name}' |
+	sort -h
+}
+
+# List all installed packages not base or base-devel groups with info.
+@-packages-list-user-info() {
+	expac -HM '%-20n\t%10d' $(@-list-user-installed-packages)
+}
+
+# Update mirrorlist by best match from speed test.
+@-update-mirrolist() {
+
+	sudo reflector \
+	--verbose \
+	--latest 40 \
+	--number 10 \
+	--sort rate \
+	--protocol http \
+	--save /etc/pacman.d/mirrorlist
+}
+
+# Remove everything but not the base and base-devel group.
+@-remove-all-keep-base() {
+
+	all_packages=/tmp/all.list
+	base_packages=/tmp/base.list
+
+	pacman -Qq | sort > $all_packages
+	for i in $(pacman -Qqg base base-devel); do pactree -ul "$i"; done | sort -u > $base_packages
+
+	installed_by_user_packages=$(comm -23 $all_packages $base_packages)
+	sudo pacman -R $installed_by_user_packages
+}
+
+@-show-music-notes() {
+	ffplay -hide_banner -f lavfi \
+		"amovie='$1', asplit [a][out1]; [a] showcqt=size=1400x1052 [out0]";
+}
+

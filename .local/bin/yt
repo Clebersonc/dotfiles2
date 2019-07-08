@@ -1,0 +1,112 @@
+#!/usr/bin/dash
+#
+# Youtube simple search script.
+#
+
+best='bestvideo[ext=mp4][height<=?1080][fps<=30]+bestaudio[ext=m4a]'
+playlist=
+shuffle=
+format=18
+answer=
+
+usage() {
+	echo "Usage: yt [OPTIONS] [SEARCH]"
+	printf "\n%s\n\n" "Simple youtube search."
+	echo "Options:"
+	printf "  %s  %s\n" "-a" "Play only audio."
+	printf "  %s  %s\n" "-p" "Search for playlists."
+	printf "  %s  %s\n" "-s" "Shuffle playlist videos."
+	printf "  %s  %s\n" "-b" "Best video format."
+	printf "  %s  %s\n" "-1" "Automatic select first option."
+	printf "  %s  %s\n" "-h" "Show this message and exit."
+	printf "\n  %s\n" "When results are appearing,"
+	printf "  %s\n" "press the ctrl-c to interrupt."
+	exit 0
+}
+
+# Set option if exists.
+while getopts "hbaps1" opt; do
+	case "$opt" in
+		h) usage; ;;
+		b) format=$best; ;;
+		a) format=250; ;;
+		p) playlist="&sp=EgIQAw%253D%253D"; ;;
+		s) shuffle="--shuffle"; ;;
+		1) answer=1; ;;
+		*) usage; ;;
+	esac
+done
+
+# Remove options from args output.
+shift $((OPTIND-1))
+
+# # One or more arguments are expected to the search.
+# if [ -z "$*" ]; then
+# 	printf "%s\n\n" "yt: expected an argument or more to search.";
+# 	usage;
+# 	exit;
+# fi
+
+# Fix search args to use on url.
+search=$(echo "$@" | tr ' ' '+')
+index=1
+
+
+# Get urls from youtube search matches.
+results=$(
+	curl -s -L "https://www.youtube.com/results?search_query=$search$playlist" 2>/dev/null |
+	ag yt-lockup-content |
+	tr ' ' '\n' |
+	grep href |
+	grep watch |
+	awk '!a[$0]++' |
+	cut -d'"' -f2 |
+	grep -v -E 'start_radio' |
+	head --lines=9
+)
+
+
+# Check if result is already selected with option -1.
+if [ -z $answer ]; then
+
+	printf "%s\n" "============================================"
+	printf "\t%s\n\n" "Welcome to Youtube Search";
+
+	# Loop on results and print each video title.
+	for url in $results; do
+
+		# Press Ctrl-C to interrupt.
+		trap 'printf "\b\b  "; break;' INT
+
+		# Playlist title catch is different from normal videos.
+		if [ -n "$playlist" ]; then
+			title=$(lynx --dump "https://www.youtube.com/${url#*com/}" | grep 15 | sed '1q;d' | cut -d']' -f2)
+		else
+			title=$(lynx --dump "https://www.youtube.com/${url#*.com/}" |sed '2q;d' | cut -d']' -f3 | cut -d '[' -f1;)
+		fi
+
+		printf "\t%s   %s\n" "$index"   "$title"
+		index=$((index+1))
+
+
+	done
+	# Press Ctrl-C again to exit the program.
+	trap 'printf "\b\b  \n"; exit;' INT
+
+	printf "\n%s\n" "============================================"
+	printf "\t%s\n\t%s" "Please select the link to open:" "> "; read -r answer;
+
+	# The answer must be a number between 1-9.
+	while ! echo "$answer" | grep -E "^[1-9]$" 1>/dev/null; do
+		printf "\t%s\n\t%s" "Please enter a number [1-9]:" "> "; read -r answer;
+	done
+fi
+
+# Take the url match.
+match=$(echo "$results" | tr ' ' '\n' | sed "$answer""q;d")
+
+# Fix url playlist to play with mpv.
+[  -n "$playlist" ] && match="/playlist?${match#*;}"
+
+printf "\n%s%s\n\n" "Selected url: " "$match"
+setsid mpv $shuffle --really-quiet --ytdl-format $format "https://www.youtube.com${match}" &

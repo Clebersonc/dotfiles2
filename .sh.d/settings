@@ -1,0 +1,16 @@
+# $dotfiles: settings,v 1.0 12/06/2019 22:49
+
+# mksh options
+HISTFILE=$HOME/.sh.d/.history # Where history logs are stored.
+# CDPATH=.:$HOME:/ # The `cd` search for directories on CDPATH if not found in currend dir.
+HISTSIZE=100000 # The maximum number of events stored in the internal history list.
+SAVEHIST=100000 # The maximum number of history events to save in the history file.
+
+
+# execute startx when system boot and load some options.
+if [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+	eval $(dircolors --sh "$HOME/.config/.dircolors") # Load dircolors.
+	[[ -f ~/.config/Xmodmap ]] && xmodmap ~/.config/Xmodmap # Custom key binding table.
+	sleep 5
+	exec startx
+fi

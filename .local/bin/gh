@@ -1,0 +1,87 @@
+#!/usr/bin/sh
+#
+# Github simple script.
+
+repo_search () {
+	echo $search
+	search=$(echo "$@" | tr ' ' '+')
+
+	results=$(
+		lynx --dump "https://github.com/$search" |
+		ag "https://github.com/[a-zA-Z]+/[a-zA-Z\-]+$" |
+		sed '/topics\|features\|site\|about/d' |
+		cut -d'/' -f4-5 |
+		head --lines=9 |
+		awk '!a[$0]++'
+	)
+
+	total=$(echo "$results" | tr ' ' '\n' | wc -l)
+
+	printf "%s\n" "============================================"
+	printf "\t%s\n\n" "Welcome to Github Search";
+
+	echo "$results" | tr ' ' '\n' | tr '/' ' ' | column -t | nl | tr '-' ' '
+
+	printf "%s\n" "============================================"
+	printf "\t%s\n\t%s" "Please select the link to open:" "> "; read -r answer;
+	while ! echo "$answer" | grep -E "^[1-$total]$" 1>/dev/null; do
+		printf "\t%s%s%s\n\t%s" "Please enter a number [1-" "$total" "]:" "> "; read -r answer;
+	done
+
+	match=$(echo "$results" | tr ' ' '\n' | sed "$answer""q;d")
+
+	srf "github.com/$match"
+}
+
+topics_search() {
+	search=$(echo "$@" | tr ' ' '+')
+
+	printf "%s\n" "============================================"
+	printf "\t%s\n\n" "Welcome to Github Topic Search";
+
+	results=$(
+		lynx --dump "https://github.com/search?q=""$search""&type=Topics" |
+			grep "https://github.com/topics/" |
+			cut -d' ' -f4 |
+			cut -d'/' -f5 |
+			head --lines=9 |
+			awk '!a[$0]++'
+	)
+
+	total=$(echo "$results" | tr ' ' '\n' | wc -l)
+
+	echo "$results" | tr ' ' '\n' | tr '/' ' ' | nl | tr '-' ' '
+
+	printf "%s\n" "============================================"
+	printf "\t%s\n\t%s" "Please select one topic to open:" "> "; read -r answer;
+
+	while ! echo "$answer" | grep -E "^[1-$total]$" 1>/dev/null; do
+		printf "\t%s%s%s\n\t%s" "Please enter a number [1-" "$total" "]:" "> "; read -r answer;
+	done
+
+	match=$(echo "$results" | tr ' ' '\n' | sed "$answer""q;d")
+
+	repo_search "topic/$match"
+}
+
+usage() {
+	echo "Usage: yt [OPTIONS] [SEARCH]"
+	printf "\n%s\n\n" "Simple github search."
+	echo "Options:"
+	printf "  %s  %s\n" "-t" "Search for topics."
+	exit
+}
+
+while getopts "ht" opt; do
+	case "$opt" in
+		*\|h)
+			echo "Usage: yt [OPTIONS] [SEARCH]"
+			printf "\n%s\n\n" "Simple github search."
+			echo "Options:"
+			printf "  %s  %s\n" "-t" "Search for topics."
+			exit ;;
+		t) shift; topics_search "$@"; exit ;;
+	esac
+done
+
+repo_search "search?q=$@";

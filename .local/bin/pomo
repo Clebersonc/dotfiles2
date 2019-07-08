@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# A minimalistic pomodoro timer.
+# e.g. pomo 5 25 "Hello!"
+
+# Exit if /tmp/pomo.lock exists
+[ -f /tmp/pomo.lock ] && echo "Be careful! One pomodoro at a time." && exit
+
+# Create pomo.lock, sleep 1 sec and verify lock
+echo $$ > /tmp/pomo.lock
+sleep 1
+[ "x$(cat /tmp/pomo.lock)" == "x"$$ ] || exit
+
+# Do stuff
+notify-send "Pomodoro start!"
+sleep $((${1:-25} * 60-30))
+if [ -f /tmp/pomo.lock ]; then
+	notify-send "($(date +%H:%M)) ${3:-Break time in 30 seconds!}"
+	sleep 30
+	rm /tmp/pomo.lock &
+	playerctl pause
+	slock
+	echo 'Back to work!'$'\n\n''Concentrate and'$'\n''focus on your task, '$'\n''NO PAIN NO GAIN.' | sm -b black -f white -
+fi

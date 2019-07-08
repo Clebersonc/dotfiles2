@@ -1,0 +1,53 @@
+# $dotfiles: alias, v 1.0  11/06/2019 00:59:00
+
+# Core
+alias ll="ls -l --all --classify --dereference-command-line | more"
+alias ls='ls --almost-all --classify --color=always --group-directories-first'
+alias mkdir='mkdir --parents' # Make parentes if needs.
+alias ip='ip -color' # Use `ip` utility always with colors.
+alias mv='mv --interactive --verbose' # Move nodes with interactive mode and extra verbosity.
+alias cp='cp --interactive --verbose' # Copy nodes with interactive mode and extra verbosity.
+alias ln='ln --interactive --verbose' # Link nodes with interactive mode and extra verbosity.
+alias updb='sudo updatedb' # Update db for locate command.
+alias lsg='ls | grep' # Search on currend dir files.
+alias rm='trash' # Use 'trash' to have more control for your deleted files.
+alias sudo='sudo --preserve-env' # Use current user config files.
+
+# Others
+alias dropdown='setsid st -c dropdown' # Simple dropdown terminal.
+alias pbcopy="xclip -selection clipboard" # Copy terminal output.
+alias pbpaste="xclip -selection clipboard -out" # Paste text on clipboard.
+alias sdcv='sdcv --color -01' # Dictionary with colors.
+alias toen='itranslate --raw -to en' # Transalte eny word to english.
+alias topt='itranslate --raw -to pt' # Transalte eny word to portuguese.
+alias play='setsid ampv' # Play music using custom mpv command.
+alias calc='bc -l <<<' # Simple calculator, only expressions without space.
+alias yv='youtube-viewer --resolution=240p'
+alias subs='youtube-viewer --resolution=240p -SV'
+alias mpv=umpv
+
+# Shotcuts
+alias p='ping archlinux.org'
+alias u=whoami
+alias q=exit
+alias r=reset
+
+# Shotcuts Others
+alias m='dropdown -g 85x28 -e man' # floating man pages.
+# alias v='dropdown -g 100x28 -e nvim' # Floating termina file editing.
+alias d='ddgr --num=5 --url-handle=srf' # Search on duckduck displaying 5 matches.
+alias s='ddgr --num=5 --url-handle=web' # Search on duckduck displaying 5 matches in read mode.
+alias n='dropdown -e nnn' # Light file manager whith floating terminal.
+alias a='awman' # Search on arch wiki offline.
+
+# Trizen
+alias t='trizen'
+alias tn='trizen --noconfirm'
+alias tsn='trizen --sync --noconfirm'
+alias trn='trizen --remove --nosave --recursive --noconfirm'
+alias tp='sudo pacman --sync --search' # Search on Arch Official Repository.
+alias ta='trizen --sync --aur --search' # Search in Arch User Repository.
+alias up='trizen --sync --refresh --sysupgrade'
+alias list-install='trizen -sync --needed - < ' # Install from list.
+alias remove-orphans='trizen --remove --nosave --recursive $(pacman -Qtdq)' # Remove orphan packages.
+

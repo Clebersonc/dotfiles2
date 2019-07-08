@@ -1,0 +1,16 @@
+#!/usr/bin/sh
+
+filepath=$(
+	cat ~/.config/vim-logs |
+	fzf --exact \
+	    --multi \
+		--tac \
+		--prompt='nvim ' \
+		--height='20%' \
+	| tr '\n' ' '
+)
+
+
+if [ ! -z "$filepath" ]; then
+	nvim $filepath
+fi

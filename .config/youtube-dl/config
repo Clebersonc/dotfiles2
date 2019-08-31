@@ -2,7 +2,7 @@
 --no-mtime
 
 # Save under ~/Videos directory.
---output ~/Videos/%(title)s.%(ext)s
+--output ~/Downloads/%(title)s.%(ext)s
 
 # Escape all kind of weird characters in file name.
 --restrict-filenames

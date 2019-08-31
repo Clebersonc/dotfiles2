@@ -2,8 +2,7 @@
 
 str=""
 
-for i in "$@"
-do
+for i in "$@"; do
 	str="$str$i"%20
 done
 output=$(curl "https://www.thepiratebay.org/search/$str" 2>/dev/null)
@@ -14,21 +13,16 @@ if [[ $output == $server_down ]]; then
 	exit 0
 fi
 
-
-#if [[ $(echo $output | wc -l) -eq 1 ]]; then
-#	echo $output
-#	echo $output | wc -l
-#	exit 0
-#fi
-
 matches=$(echo -e "${output[*]}" | grep detName\"\> | sed -E 's/.*href="\/torrent\/[0-9]+\///g' | sed 's/" class=.*//g' | sed 's/_/ /g' | sed 's/^ *//;s/ *$//' | nl -nrz -w2)
 echo -e \\n"${matches[*]}"\\n
 
-read -p "Enter the torrent number: " number
+read -r -p "Enter the torrent number: " number
 
 url=$(echo "${output[*]}" | grep detName\"\> | sed -n "$number"p | sed -E 's/.*href="//g' | sed 's/" class=.*//g')
 url=$(echo "$url" | sed 's/\[/\\[/g' | sed 's/\]/\\]/g')
 torrent=$(curl "https://www.thepiratebay.org$url" 2>/dev/null)
+echo $torrent
+echo $torrent >~/torrent.html
 
 description=$(echo "$torrent" | sed -n "/<pre>/,/<\/pre>/p" | sed 's/<[^>]*>//g' | sed 's/.*href.*//' | sed 's/.*http.*//' | sed '/^\s*$/d')
 info=$(echo "$torrent" | grep -A 32 Type: | sed 's/<[^>]*>//g' | sed 's/&nbsp;//' | sed 's/&gt;//g' | sed -E 's/&.*Bytes\)//g' | tr -d '\n' | sed -E 's/[[:space:]]+/ /g' | sed 's/By:/\nBy:       /' | sed 's/Seeders:/\nSeeders:  /' | sed 's/Leechers:/\nLeeches:  /' | sed 's/Comments/\nComments  /' | sed 's/Info/\nInfo/' | sed 's/ Uploaded:/\nUploaded: /' | sed 's/Files:/\nFiles:    /' | sed 's/Size:/\nSize      /' | sed 's/Tag(s):/\nTag(s):   /' | sed 's/ Type:/Type:     /')
@@ -37,12 +31,13 @@ echo -e \\n"${description[*]}"\\n
 echo -e \\n"Torrent Info:   "\\n
 echo -e "Name       $(echo $url | sed -E 's/\/torrent\/[0-9]+\///g' | sed 's/_/ /g')"
 echo -e "${info[*]}"\\n
-hash=$(echo "${info[*]}" | grep Hash | sed 's/Info Hash: //g')
+# hash=$(echo "${info[*]}" | grep Hash | sed 's/Info Hash: //g')
+magnet=$(echo $torrent | tr ' ' '\n' | grep "href=\"magnet" | sed -e '1q;d' | sed -e 's/href=//' | sed -e 's/"//g')
 
-read -p "Do you want download? [Y/n] " answer
+read -r -p "Do you want download? [Y/n] " answer
 
 if [[ ${answer,,} != 'n' ]]; then
 
-	read -p "What is the destination: " path
-	webtorrent download $hash -o "$HOME/$path"
+	echo -e "Starting torrent download ――> Prease wait"
+	aria2c --follow-torrent=mem --seed-time=0 --console-log-level=error -d "$HOME/Downloads" "$magnet"
 fi

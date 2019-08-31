@@ -4,3 +4,7 @@
 	path = ./conf/aliases.gitconfig
 	path = ./conf/colors.gitconfig
 	path = ./conf/urls.gitconfig
+[gpg]
+	program = gpg
+[commit]
+	gpgsign = true

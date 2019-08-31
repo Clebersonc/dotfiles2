@@ -37,7 +37,7 @@ LESS_OPTIONS=(
 export LESS="${LESS_OPTIONS[@]}" && unset LESS_OPTIONS
 
 # Use `highlight` program to try to highlight opened file according to its extension.
-# export LESSOPEN="| highlight $HIGHLIGHT_OPTIONS -- %s 2>/dev/null"
+export LESSOPEN="| highlight --out-format=xterm256 --style=molokai -- %s 2>/dev/null"
 
 export LESS_TERMCAP_md=$(tput bold; tput setaf 4) # Turn on bold mode.
 export LESS_TERMCAP_me=$(tput sgr0) # Turn off all attributes.
@@ -52,4 +52,4 @@ export LESS_TERMCAP_ZV=$(tput rsubm) # End subscript mode.
 export LESS_TERMCAP_ZO=$(tput ssupm) # Enter superscript mode.
 export LESS_TERMCAP_ZW=$(tput rsupm) # End superscript mode.
 
-# vim: filetype=sh
+# vim:ft=sh:

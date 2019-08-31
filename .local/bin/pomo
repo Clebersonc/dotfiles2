@@ -1,23 +1,31 @@
-#!/usr/bin/env bash
-# A minimalistic pomodoro timer.
-# e.g. pomo 5 25 "Hello!"
+#!/usr/bin/sh
 
-# Exit if /tmp/pomo.lock exists
-[ -f /tmp/pomo.lock ] && echo "Be careful! One pomodoro at a time." && exit
+# Minutes
+TIME=25
 
-# Create pomo.lock, sleep 1 sec and verify lock
-echo $$ > /tmp/pomo.lock
-sleep 1
-[ "x$(cat /tmp/pomo.lock)" == "x"$$ ] || exit
+notify() {
+	SEC=$1
+	seconds=$((SEC * 1000))
 
-# Do stuff
-notify-send "Pomodoro start!"
-sleep $((${1:-25} * 60-30))
-if [ -f /tmp/pomo.lock ]; then
-	notify-send "($(date +%H:%M)) ${3:-Break time in 30 seconds!}"
-	sleep 30
-	rm /tmp/pomo.lock &
+	sudo -u $USER DISPLAY=:0 \
+		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/1000/bus \
+		notify-send -t "$seconds" "$2"
+}
+
+randcowfortune() {
+	sleep $((13 * 60))
+	notify 17 "$(fortune /usr/share/fortune/vimtips | botsay -)"
+}
+
+while true; do
+	randcowfortune &
+	sleep 5;
+	playerctl play
+	# notify "$(cowsay -f flaming-sheep 🍅 Pomodoro: Start! Focus on your task.)"
+	sleep $((TIME * 60 - 30)) && \
+	notify 5 "$(cowsay -t 💤 $(date +%H:%M))" && \
+	sleep 30 && \
+	slock && \
 	playerctl pause
-	slock
-	echo 'Back to work!'$'\n\n''Concentrate and'$'\n''focus on your task, '$'\n''NO PAIN NO GAIN.' | sm -b black -f white -
-fi
+done
+

@@ -5,6 +5,3 @@
 [url "git@gist.github.com:"]
 	insteadOf = "gist:"
 	pushInsteadOf = "gist:"
-
-[url "git@github.com:kutsan/"]
-	insteadOf = "my:"

@@ -7,10 +7,10 @@ case ${KSH_VERSION:-} in
 esac
 
 # Load settings
-. $HOME/.sh.d/settings
-. $HOME/.sh.d/func
-. $HOME/.sh.d/alias
-. $HOME/.sh.d/style
-. $HOME/.sh.d/export
-. $HOME/.sh.d/bind
+. $HOME/.config/mksh/settings
+. $HOME/.config/mksh/func
+. $HOME/.config/mksh/alias
+. $HOME/.config/mksh/style
+. $HOME/.config/mksh/export
+. $HOME/.config/mksh/bind
 

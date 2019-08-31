@@ -1,0 +1,69 @@
+#!/usr/bin/bash
+
+declare -a modes=(read-mode offline-mode normal-mode)
+html=/tmp/webpage.html
+dmn=$(echo "$@" | cut -d'/' -f3)
+path=$(echo "$@" | cut -d'/' -f4-)
+
+function offline-mode {
+
+	printf "\n%s" "Selected Mode --> offline"
+	sleep 0.5; printf "\n%s %s" "Domain: " "$dmn"
+	sleep 0.2; printf "\n%s %s\n" "Path: " "$path"
+
+	printf "\n%s " "Downloading page wait..."
+	curl -s -L "$*" > $html 2>/dev/null && printf "%s\n" "DONE"
+
+	qutebrowser $html
+}
+
+function read-mode {
+
+	printf "\n%s" "Selected Mode --> read"
+	sleep 0.5; printf "\n%s %s" "Domain: " "$dmn"
+	sleep 0.2; printf "\n%s %s\n" "Path: " "$path"
+
+	page="https://pdf.fivefilters.org/makepdf.php?v=2.5&url=""$*""&mode=single-story&output=html&template=A4&title=+&order=desc&date=true&images=true&api_key=&sub=read+mode"
+
+	printf "\n%s " "Downloading page wait..."
+	curl -L "$page" > $html 2>/dev/null && printf "%s\n" "DONE"
+
+	# Correct webpage title name.
+	sed -i -e "s|<title>.*</title>|<title>Read Mode</title>|g" $html
+
+	# Aling text and change font.
+	sed -i -e 's|</head>|</head></span> <style> p { font-size:112%; font-family:Times, sans-serif; align-items:center; justify-content=center; line-height: 28px;} .a {  padding-left:18%; width:65%; text-align:left; } </style>|' \
+		-e 's|<html\(.*\)>|<html\1><div class="a">|' \
+		-e 's|</html\(.*\)>|</div></html\1>|' $html
+
+	# Remove the unecessery.
+	sed -i -e '37d' -e '35d' -e '27d' -e '22d' $html
+
+	qutebrowser $html
+
+}
+
+function normal-mode {
+
+	printf "\n%s" "Selected Mode --> normal"
+	sleep 0.5; printf "\n%s %s" "Domain: " "$dmn"
+	sleep 0.2; printf "\n%s %s\n" "Path: " "$path"
+
+	printf "\n%s " "Downloading page please wait..."
+	sleep 1; qutebrowser "$*"
+    printf "%s\n" "DONE"
+}
+
+echo "Select in which mode the url should be opened [1-3]:"
+printf "%s\n%s\n%s\n" "read" "offline" "normal" | nl
+echo -n " > "; read -r answer;
+
+# The answer must be a number between 1-9.
+while ! echo "$answer" | grep -E "^[1-3]$" 1>/dev/null; do
+	echo "Please enter a correct number."
+	echo -n " > "; read -r answer;
+done
+
+selected_mode=${modes[$((answer-1))]}
+
+$selected_mode "$*" 2>/dev/null && bspc desktop -f '^2'

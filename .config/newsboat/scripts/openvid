@@ -1,0 +1,31 @@
+#!/usr/bin/bash
+
+dropvid_pid="$$"
+
+function check-network-health {
+	echo -n $'\n'"Checking network..."
+	ping -q -c 1 8.8.8.8 > /dev/null && echo "DONE" && return
+	read -rs -n1 -p $'\n'"Internet conection failed, press any key to exit."
+	exit
+}
+
+function exit-if-load-is-too-long {
+	sleep 30; kill "$(pgrep mpv)"
+	echo -n $'\n'"This is taking too long, please try again.";
+	sleep 1; echo -n $'\n'"Exit in 5 seconds...";
+	sleep 5; kill $dropvid_pid
+}
+
+function start-video-loading {
+	echo -n "Loading video... "
+	setsid ~/.local/bin/3rd/umpv "$@" &
+	sleep 5
+	! pgrep mpv && echo waiting ytdl
+	tail --pid="$(pgrep youtube-dl)" -f /dev/null &>/dev/null
+	echo "DONE"; kill "$exit_if_load_is_too_long_pid"
+}
+
+check-network-health
+exit-if-load-is-too-long &
+exit_if_load_is_too_long_pid="$!"
+start-video-loading "$*"

@@ -1,0 +1,45 @@
+# $dotfiles: alias, v 1.0  11/06/2019 00:59:00
+
+# Core
+alias sudo='sudo --preserve-env' # Use current user config files.
+alias rm='trash' # Use `trash` program instead of built-in irrecoverable way to delete nodes.
+alias grep='grep --color=auto --exclude-dir=".git" --exclude-dir="node_modules"' # Grep with colors and ignore common directories.
+alias ip='ip -color' # Use `ip` utility always with colors.
+alias du='du --max-depth=1 --si' # Display size of files and folders under current directory.
+alias mv='mv --interactive --verbose' # Move nodes with interactive mode and extra verbosity.
+alias ln='ln --interactive --verbose' # Link nodes with interactive mode and extra verbosity.
+alias cp='cp --interactive --verbose' # Copy nodes with interactive mode and extra verbosity.
+alias mkdir='mkdir --parents' # Make parentes if needs.
+alias ls='exa --all --classify --color=always --group-directories-first --sort=extension'  # List name of nodes.
+alias ll="exa --long --all --group --header --classify --group-directories-first --sort=modified --git"
+alias lsg='ls | grep' # Search on currend dir files.
+alias tree='exa --classify --color=always --group-directories-first --sort=extension --tree'
+alias updb='sudo updatedb' # Update db for locate command.
+alias tmp='command mkdir --parents --verbose /tmp/$(whoami) && cd /tmp/$(whoami)'
+alias calc='bc -l <<<' # Simple calculator, only expressions without space.
+alias makepkgup='updpkgsums'
+# alias n='setsid kitty --class dropdown -o initial_window_width=70c -o initial_window_height=30c nnn 2>/dev/null' # Light file manager whith floating terminal.
+# alias news='setsid kitty --class dropdown -o initial_window_width=100c -o initial_window_height=30c newsboat 2>/dev/null' # Light file manager whith floating terminal.
+alias q='exit' # quick exit
+alias p='ping archlinux.org' # Tired of ping in google?
+alias d='wget $(xclip -selection clipboard -out)'
+alias w3m='w3m -no-mouse -cookie -F'
+alias pbcopy='xclip -selection clipboard' # Copy terminal output.
+alias pbpaste='xclip -selection clipboard -out' # Paste text on clipboard.
+alias weechat='weechat --dir="$HOME/.config/weechat" --no-script'
+# alias nethack='ssh nethack@alt.org'
+
+# Trizen/pacman
+alias t='trizen'
+alias tn='trizen --noconfirm'
+alias tsn='trizen --sync --noconfirm'
+alias trn='trizen --remove --nosave --recursive --noconfirm'
+alias tp='pacman --sync --search' # Search only on Arch Official Repository.
+alias ta='trizen --sync --aur --search' # Search only on Arch User Repository.
+alias tu='trizen -upgrade' # Install local package
+alias up='trizen --sync --refresh --sysupgrade'
+alias pkglist='trizen -Ql'
+alias pkgowns='trizen -Qo'
+alias pkgsearch='trizen -Ss'
+alias pkginfo='trizen -Si'
+alias aurcomments='trizen -C'

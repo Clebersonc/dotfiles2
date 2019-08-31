@@ -1,0 +1,26 @@
+# All Articles
+"query:Unread Articles:unread = \"yes\""
+
+# Youtube
+# NOTE: To get the youtube search feed, go to youtube channel and open the page source view,
+# search for 'canonical' and get the ChannelId. The url should look like this:
+# https://www.youtube.com/feeds/videos.xml?ChannelID
+https://www.youtube.com/feeds/videos.xml?channel_id=UC2eYFnH61tmytImy1mTYvhA "~Luke Smith" tech youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCEi4mIXHbqrEGsLoywqKi5g "~Saco Cheio Podcast" humor youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCXkNod_JcH7PleOjwK_8rYQ "~Polyphonic" music youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCdJdEguB1F1CiYe7OEi3SBg "~Jon Tron Show" humor youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCJkMlOu7faDgqh4PfzbpLdg "~Nerd Writer 1" music youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCZq_CYXRoRjKqidapMPujaQ "~Entre Planos" movies youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UC0ToKV1PGi9FYlP5g5iRIOw "~Nintendo Fan" games youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCYvdGhl2G-M5ojWW1UzODJg "~Colonia Contra Ataca" games youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCKdVW7Np-9l3CM5daYcGEAw "~Provocações" talkshow youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCH2VZQBLFTOp6I_qgnBJCuQ "~Canal Nostalgia" history youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UClu474HMt895mVxZdlIHXEA "~Nerdologia" history tech youtube
+https://www.youtube.com/feeds/videos.xml?channel_id=UCh7TUTXojlE8vRtb-EnuDzw "~Metaforando" youtube self
+https://www.youtube.com/feeds/videos.xml?channel_id=UCt_4wzTQqmcUvemNkeO0plA "~Ei Nerd" youtube comics anime movies
+https://www.youtube.com/feeds/videos.xml?channel_id=UCkAbeyJZqp6JFYfKy-98NjA "~Integrando Conhecimento" youtube youtube history tech
+# Newsletter
+https://news.ycombinator.com/rss "~Hacker News"
+http://feeds.feedburner.com/Makeuseof "~MakeUseOf - Tecnology " news tech tutorials
+http://feeds.feedburner.com/GamasutraNews "~Gamasutra - Making Games" games news
+https://gizmodo.com/rss "~Gizmodo - Tech" news tech

@@ -1,0 +1,82 @@
+# $dotfiles: export,v 1.1 2016/03/11 00:54:40 dcat Exp $
+
+# Start a command with a space and won't be saved in history.
+export HISTCONTROL=ignoredups
+
+# Initialize $PATH with system binaries.
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:/usr/bin/vendor_perl/:/opt/plan9/bin/:$PATH
+
+# Bin local path for all folders.
+export PATH="$(find $HOME/.local/bin -type d | tr '\n' ':')$PATH"
+
+# Man fixed line width for man pages
+export MANWIDTH='80'
+
+# Locale
+export LANG='en_US.UTF-8'
+export LC_ALL='en_US.UTF-8'
+export editorLANGUAGE='en_US.UTF-8'
+export LC_CTYPE='en_US.UTF-8'
+
+# default programs
+export EDITOR='nvim'
+export VISUAL=$EDITOR
+export PAGER='less'
+export BROWSER='qutebrowser'
+export FILE='nnn'
+
+# Default Config and Cache Home
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DOWNLOAD_DIR="$HOME/Downloads"
+
+# fzf
+export FZF_DEFAULT_COLORS='--color=hl:4,hl+:4,info:8,border:8,prompt:4,pointer:3,marker:3,spinner:8,header:6'
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_COLORS \
+ 	--exact \
+ 	--no-bold \
+ 	--inline-info \
+ 	--height='40%' \
+ 	--jump-labels='bmvenritusldkfjgh' \
+ 	--bind='ctrl-f:jump-accept'"
+export FZF_COMPLETION_OPTS='--preview="highlight --out-format=xterm256 --style=pablo {} 2>/dev/null || cat {}"'
+export FZF_DEFAULT_COMMAND='ag -l \
+  --nocolor \
+  --hidden \
+  --follow \
+  --skip-vcs-ignores \
+  --ignore .git \
+  --ignore node_modules \
+  --ignore public \
+  --ignore build \
+  --ignore vendor \
+  --ignore env \
+  --ignore __pycache__ \
+  -g ""'
+
+# Stardict
+export STARTDICT_DATA_DIR=
+export SDCV_HISTORY=$HOME/.config/stardict/history
+export SDCV_HISTORYSIZE=
+# export SDCV_PAGER='fold -s -w 100 | less'
+
+# wget
+export WGETRC="$HOME/.config/wget/wgetrc"
+
+# GnuPG
+export GPG_TTY=$(tty)
+
+# Colorscheme for the command cht.sh.
+export CHTSH_QUERY_OPTIONS="style=trac"
+
+# less
+source "$HOME/.config/less/lessrc" # Load core options.
+export LESSHISTFILE="$HOME/.config/less/lesshistory" # Command and search history file.
+
+# Android
+export _JAVA_AWT_WM_NONREPARENTING=1 # Fix wm android studio
+# IDE_HOME=/opt/android-files/AndroidStudio3.1/idea
+export STUDIO_PROPERTIES=/opt/android-studio/bin/idea.properties
+export IDEA_PROPERTIES=/opt/android-studio/bin/idea.properties
+export IDEA_PROPERTIES_PROPERTY=/opt/android-studio/bin/idea.properties

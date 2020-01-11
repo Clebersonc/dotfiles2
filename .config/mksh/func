@@ -4,12 +4,20 @@
 #   Functions   #
 #################
 
+torrent() {
+	aria2c --follow-torrent=mem --seed-time=0 --console-log-leve=error "$@"
+}
+
+youtube-mp3() {
+	youtube-dl --extract-audio --audio-format mp3 "$@"
+}
+
 pkgnew() {
 	file1=/tmp/pkgnewfile1
 	file2=/tmp/pkgnewfile2
-	cat .config/pkglist.csv | sed 's/#.*//' | sed -e 's/A\(,\)/\1/' -e 's/,\(.*\),".*/\1/' -e '/^[[:space:]]*$/d' | tr -d ',' | sort > $file1
+	cat ~/.config/pkglist.csv | sed 's/#.*//' | sed -e 's/A\(,\)/\1/' -e 's/,\(.*\),".*/\1/' -e '/^[[:space:]]*$/d' | tr -d ',' | sort > $file1
 	@-packages-list-user | sort > $file2
-	diff -uB $file1 $file2 | diff-so-fancy | less
+	diff -uB $file2 $file1 | diff-so-fancy | less
 }
 
 # Bookmark manager.
@@ -22,6 +30,7 @@ function b() {
 	bookmarks['j']="~/Projects"
 	bookmarks['v']="~/Videos"
 	bookmarks['m']="~/Music"
+	bookmarks['b']="~/Books"
 
 	local selected_bookmark
 
@@ -259,7 +268,7 @@ function reverse-history-search {
 	for i in $(pacman -Qqg base base-devel); do pactree -ul "$i"; done | sort -u > "$base_packages"
 
 	installed_by_user_packages=$(comm -23 "$all_packages" "$base_packages")
-	sudo pacman -R "$installed_by_user_packages"
+	sudo pacman -R $installed_by_user_packages
 }
 
 @-show-music-notes() {
@@ -276,3 +285,13 @@ function reverse-history-search {
 @-multi-install() {
 	trizen -Sync --needed - < "$1"
 }
+
+@-remove-unused-packages() {
+	sudo pacman -Rns $(pacman -Qtdq)
+}
+
+@-remove-unused-and-optionally-packages() {
+	sudo pacman -Rns $(pacman -Qttdq)
+}
+
+# vi: ft=sh

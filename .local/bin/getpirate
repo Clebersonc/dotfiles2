@@ -21,8 +21,6 @@ read -r -p "Enter the torrent number: " number
 url=$(echo "${output[*]}" | grep detName\"\> | sed -n "$number"p | sed -E 's/.*href="//g' | sed 's/" class=.*//g')
 url=$(echo "$url" | sed 's/\[/\\[/g' | sed 's/\]/\\]/g')
 torrent=$(curl "https://www.thepiratebay.org$url" 2>/dev/null)
-echo $torrent
-echo $torrent >~/torrent.html
 
 description=$(echo "$torrent" | sed -n "/<pre>/,/<\/pre>/p" | sed 's/<[^>]*>//g' | sed 's/.*href.*//' | sed 's/.*http.*//' | sed '/^\s*$/d')
 info=$(echo "$torrent" | grep -A 32 Type: | sed 's/<[^>]*>//g' | sed 's/&nbsp;//' | sed 's/&gt;//g' | sed -E 's/&.*Bytes\)//g' | tr -d '\n' | sed -E 's/[[:space:]]+/ /g' | sed 's/By:/\nBy:       /' | sed 's/Seeders:/\nSeeders:  /' | sed 's/Leechers:/\nLeeches:  /' | sed 's/Comments/\nComments  /' | sed 's/Info/\nInfo/' | sed 's/ Uploaded:/\nUploaded: /' | sed 's/Files:/\nFiles:    /' | sed 's/Size:/\nSize      /' | sed 's/Tag(s):/\nTag(s):   /' | sed 's/ Type:/Type:     /')

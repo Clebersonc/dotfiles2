@@ -119,3 +119,5 @@ c.fonts.messages.info = "11pt Noto Sans"
 c.fonts.messages.warning = "11pt Noto Sans"
 c.fonts.monospace = "11pt Noto Sans Mono"
 c.fonts.prompts = "11pt Noto Sans"
+
+config.source('adblock-yt.py')

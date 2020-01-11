@@ -9,8 +9,7 @@ HISTFILE=$HOME/.config/mksh/history # Where history logs are stored.
 HISTSIZE=100000 # The maximum number of events stored in the internal history list.
 SAVEHIST=100000 # The maximum number of history events to save in the history file.
 
-# Start graphical server if i3 not already running.
-if [ "$(tty)" = "/dev/tty1" ] && ! pgrep -x bspwm >/dev/null; then
-	eval $(dircolors --sh "$HOME/.config/mksh/dircolors") # Load dircolors.
+if [ "$(tty)" = "/dev/tty1" ] && ! pgrep -x Xorg >/dev/null; then
+ 	eval $(dircolors --sh "$HOME/.config/mksh/dircolors") # Load dircolors.
 	exec startx
 fi

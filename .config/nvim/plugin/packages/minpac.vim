@@ -29,6 +29,8 @@ function! PackInit() abort
 	" call minpac#add('sunaku/vim-dasht', {'type': 'opt'})
 	" call minpac#add('flipcoder/vim-textbeat', {'type': 'opt'})
 
+	" call minpac#add('dart-lang/dart-vim-plugin', {'type': 'opt'})
+	" call minpac#add('thosakwe/vim-flutter', {'type': 'opt'})
 endfunction
 
 " Plugin settings here.

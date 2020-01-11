@@ -30,6 +30,8 @@ nnoremap <silent> <Leader>oh :set hlsearch!<Enter>
 nnoremap <silent> <Leader>ol :set list!<Enter>
 nnoremap <silent> <Leader>op :set paste!<Enter>
 
-" List and close buffers.
+" List next, and close buffers.
 nnoremap <silent> <Leader>l :buffers!<Enter>
+nnoremap <silent> <Leader>j :next<Enter>
+nnoremap <silent> <Leader>k :next<Enter>
 nnoremap <silent> <Leader>w :bp<bar>sp<bar>bn<bar>bd<CR>

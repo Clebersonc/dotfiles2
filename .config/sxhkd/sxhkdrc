@@ -97,10 +97,10 @@ super + {t,shift + t,s,f}
 # move/resize
 # expand a window by moving one of its side outward super + alt + {h,j,k,l} bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 # contract a window by moving one of its side inward
-# super + alt {h,j,k,l}
-# 	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
-# super + alt + shift {h,j,k,l}
-# 	bspc node -z {right 20 0,top 0 -20,bottom 0 20,left -20 0}
+super + alt {h,j,k,l}
+	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
+super + alt + shift {h,j,k,l}
+	bspc node -z {right 20 0,top 0 -20,bottom 0 20,left -20 0}
 
 # move a floating window
 	# super + {Left,Down,Up,Right}
@@ -148,6 +148,10 @@ super + b
 # Focus video player desktop
 super + v
 	bspc desktop -f '^3'
+
+# Unamed desktop
+super + u
+	bspc desktop -f '^4'
 
 #Scrot [Shots currently go to your Pictures folder]
 Print

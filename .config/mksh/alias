@@ -18,15 +18,16 @@ alias updb='sudo updatedb' # Update db for locate command.
 alias tmp='command mkdir --parents --verbose /tmp/$(whoami) && cd /tmp/$(whoami)'
 alias calc='bc -l <<<' # Simple calculator, only expressions without space.
 alias makepkgup='updpkgsums'
-# alias n='setsid kitty --class dropdown -o initial_window_width=70c -o initial_window_height=30c nnn 2>/dev/null' # Light file manager whith floating terminal.
-# alias news='setsid kitty --class dropdown -o initial_window_width=100c -o initial_window_height=30c newsboat 2>/dev/null' # Light file manager whith floating terminal.
 alias q='exit' # quick exit
+alias n='nnn' # simple file manager
 alias p='ping archlinux.org' # Tired of ping in google?
 alias d='wget $(xclip -selection clipboard -out)'
 alias w3m='w3m -no-mouse -cookie -F'
 alias pbcopy='xclip -selection clipboard' # Copy terminal output.
 alias pbpaste='xclip -selection clipboard -out' # Paste text on clipboard.
 alias weechat='weechat --dir="$HOME/.config/weechat" --no-script'
+alias wine='export WINEPREFIX="$HOME/.config/wine/32"; export WINEARCH=win32; wine'
+alias wine64='export WINEPREFIX="$HOME/.config/wine/64"; export WINEARCH=win64; wine64'
 # alias nethack='ssh nethack@alt.org'
 
 # Trizen/pacman

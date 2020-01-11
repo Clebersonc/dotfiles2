@@ -35,12 +35,26 @@ music() {
     if [[ -z $(mpc current)  ]]; then
         songa=""; songb=""; icon=""
     fi
-	song="^fg(gray55)$songa ^fg(gray70)$songb"
 	[ ${#songa} -gt 20 ] && songa=$(echo "$songa" | cut -c 1-20)...
 	[ ${#songb} -gt 20 ] && songb=$(echo "$songb" | cut -c 1-20)...
-	echo -ne "^p(_LEFT)^p(100)^fg(steelblue)$icon ^fg(gray55)$songa ^fg(gray70)$songb"
+	echo -ne "^p(_LEFT)^p(65)^fg(steelblue)$icon  ^fg(gray55)$songa ^fg(gray70)$songb"
 }
 
+pomo() {
+	status=$(~/.local/bin/pomo status | cut -d' ' -f1)
+	session=$(~/.local/bin/pomo status | cut -d' ' -f2 | tr -d '[]-')
+	if [ $status == "C" ]; then
+		echo -ne "^p(_LEFT)^fg(green)  ^fg(gray50)$session"
+	elif [ $status == "B" ]; then
+		echo -ne "^p(_LEFT)^fg(skyblue)  ^fg(skyblue)$session"
+	elif [ $status == "P" ]; then
+		echo -ne "^p(_LEFT)^fg(purple)  ^fg(purple)$session"
+	elif [ $status == "R" ]; then
+		echo -ne "^p(_LEFT)^fg(deeppink)  ^fg(gray70)$session"
+	else
+		echo -ne "^p(_LEFT)^fg(steelblue)  ^fg(gray50)$session"
+	fi
+}
 logo() {
 	echo -ne "^p(_LEFT)^fg(steelblue)  ^fg(gray40)arch^fg(steelblue)linux ^bg(gray15)"
 }
@@ -56,8 +70,8 @@ window() {
 pingms() {
 	ms=$(ping -q -c 1 1.1.1.1 | grep rtt | cut -d= -f2 | cut -d. -f1)
 	# ip=$(ip r | awk 'NR==2 {print $9}')
-	if [ -z "$ip" ]; then
-		ip="offline"
+	if [ -z "$ms" ]; then
+		ms="  ?"
 	fi
 	echo -ne "^p(_RIGHT)^p(-465)^fg(steelblue)  ^fg(gray70)$ms"
 }
@@ -94,7 +108,7 @@ clock() {
 
 
 while true; do
-	logo
+	# logo
 	pingms
 	update
     volume
@@ -102,6 +116,7 @@ while true; do
     music
     load
     clock
+	pomo
     sleep 1
 done | dzen2 \
 	-x "$xpos" -y "$ypos" -h "$height" \
